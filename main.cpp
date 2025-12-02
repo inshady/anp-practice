@@ -69,6 +69,16 @@ int main()
   return err;
 }
 
+void topit::flush(std::ostream &os, const char* cnv, f_t fr)
+{
+  for (size_t i = 0; i < rows(fr); i++) {
+    for (size_t j = 0; j < cols(fr); j++) {
+      os << cnv[i * cols(fr) + j];
+    }
+    os << "\n";
+  }
+}
+
 char* topit::canvas(f_t fr, char fill) 
 {
   size_t s = rows(fr) * cols(fr);
