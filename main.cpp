@@ -30,6 +30,7 @@ namespace topit {
     p_t d;
   };
 
+  p_t* extend(const p_t* pts, size_t s, p_t fill);
   void append(const IDraw* sh, p_t** ppts, size_t &s);
   f_t frame(const p_t* pts, size_t s);
   char* canvas(f_t fr, char fill);
@@ -67,6 +68,21 @@ int main()
   delete shp[1];
   delete shp[2];
   return err;
+}
+
+topit::p_t* topit::extend(const p_t* pts, size_t s, p_t fill)
+{
+  p_t* result = new p_t[s + 1];
+  for(size_t i = 0; i < s; i++) {
+    result[i] = pts[i];
+  }
+  result[s] = fill;
+  return result;
+}
+
+void topit::append(const IDraw* sh, p_t** ppts, size_t &s)
+{
+
 }
 
 void topit::paint(p_t p, char* cnv, f_t fr, char fill)
