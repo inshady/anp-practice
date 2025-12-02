@@ -35,7 +35,8 @@ namespace topit {
 }
 
 
-int main() {
+int main()
+{
   using namespace topit;
   int err = 0;
   IDraw* shp[3] = {};
@@ -64,6 +65,22 @@ int main() {
   delete shp[2];
   return err;
 }
+
+topit::f_t topit::frame(const p_t* pts, size_t s) 
+{
+  int minx = pts[0].x, miny = pts[0].y;
+  int maxx = minx, maxy = miny;
+  for (size_t i = 1; i < s; i++) {
+    minx = std::min(minx, pts[i].x);
+    miny = std::min(miny, pts[i].y);
+    maxx = std::max(maxx, pts[i].x);
+    maxy = std::max(maxy, pts[i].y);
+  }
+
+  p_t a{minx, miny};
+  p_t b{maxx, maxy};
+  return f_t{a, b};
+} 
 
 topit::Dot::Dot(p_t dd):
  IDraw(),
