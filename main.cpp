@@ -60,7 +60,7 @@ int main()
 {
   using namespace topit;
   int err = 0;
-  IDraw* shp[4] = {};
+  IDraw* shp[5] = {};
   p_t* pts = nullptr;
   size_t s = 0;
   try {
@@ -68,7 +68,8 @@ int main()
     shp[1] = new VSeg({2, -2}, {2, 4});
     shp[2] = new Dot({5, 4});
     shp[3] = new Dot({4, 2});
-    for (size_t i = 0; i < 4; i++) {
+    shp[4] = new Dot({-2, -1});
+    for (size_t i = 0; i < 5; i++) {
       append(shp[i], &pts, s);
     }
     f_t fr = frame(pts, s);
@@ -82,7 +83,7 @@ int main()
     std::cerr << "Error\n";
     err = 1;
   }
-  for (size_t i = 0; i < 4; i++) {
+  for (size_t i = 0; i < 5; i++) {
     delete shp[i];
   }
   return err;
