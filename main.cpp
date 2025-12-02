@@ -36,8 +36,8 @@ int main() {
   try {
     shp[0] = new Dot({0, 0});
     shp[1] = new Dot({2, 3});
-
   } catch (...) {
+    std::cerr << "Error\n";
     err = 1;
   }
   delete shp[0];
