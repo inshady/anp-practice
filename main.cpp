@@ -30,6 +30,14 @@ namespace topit {
     p_t d;
   };
 
+  struct VSeg: IDraw {
+    explicit VSeg(p_t aa, p_t bb);
+    p_t begin() const override;
+    p_t next(p_t prev) const override;
+    p_t* dots;
+    size_t ndots;
+  };
+
   p_t* extend(const p_t* pts, size_t s, p_t fill);
   void extend(p_t** ppts, size_t &s, p_t fill);
   void append(const IDraw* sh, p_t** ppts, size_t &s);
@@ -48,10 +56,8 @@ int main()
   p_t* pts = nullptr;
   size_t s = 0;
   try {
-    shp[0] = new Dot({-2, -2});
-    shp[1] = new Dot({0, 0});
-    shp[2] = new Dot({1, 2});
-    for (size_t i = 0; i < 3; i++) {
+    shp[0] = new VSeg({0, 0}, {0, 5});
+    for (size_t i = 0; i < 1; i++) {
       append(shp[i], &pts, s);
     }
     f_t fr = frame(pts, s);
@@ -66,8 +72,6 @@ int main()
     err = 1;
   }
   delete shp[0];
-  delete shp[1];
-  delete shp[2];
   return err;
 }
 
@@ -144,7 +148,30 @@ topit::f_t topit::frame(const p_t* pts, size_t s)
   return f_t{a, b};
 }
 
+topit::VSeg::VSeg(p_t aa, p_t bb):
+ IDraw(),
+ dots(new p_t[std::max(aa.y, bb.y) - std::min(aa.y, bb.y) + 1]),
+ ndots(std::max(aa.y, bb.y) - std::min(aa.y, bb.y) + 1)
+{
+  for (int i = 0; i < ndots; i++) {
+    dots[i] = p_t{aa.x, aa.y + i};
+  }
+}
 
+topit::p_t topit::VSeg::begin() const {
+  return dots[0];
+}
+
+topit::p_t topit::VSeg::next(p_t prev) const {
+  for (size_t i = 0; i < ndots; i++) {
+    if (dots[i] == prev) {
+      if (i == ndots - 1) {
+        return dots[0];
+      }
+      return dots[i + 1];
+    }
+  }
+}
 
 topit::Dot::Dot(p_t dd):
  IDraw(),
