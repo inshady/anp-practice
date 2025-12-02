@@ -180,14 +180,17 @@ topit::p_t topit::HSeg::begin() const {
 }
 
 topit::p_t topit::HSeg::next(p_t prev) const {
+  p_t res = {0, 0};
   for (size_t i = 0; i < ndots; i++) {
     if (dots[i] == prev) {
       if (i == ndots - 1) {
-        return dots[0];
+        res = dots[0];
+      } else {
+        res = dots[i + 1];
       }
-      return dots[i + 1];
     }
   }
+  return res;
 }
 
 topit::VSeg::VSeg(p_t aa, p_t bb):
@@ -210,14 +213,17 @@ topit::p_t topit::VSeg::begin() const {
 }
 
 topit::p_t topit::VSeg::next(p_t prev) const {
+  p_t res = {0, 0};
   for (size_t i = 0; i < ndots; i++) {
     if (dots[i] == prev) {
       if (i == ndots - 1) {
-        return dots[0];
+        res = dots[0];
+      } else {
+        res = dots[i + 1];
       }
-      return dots[i + 1];
     }
   }
+  return res;
 }
 
 topit::Dot::Dot(p_t dd):
