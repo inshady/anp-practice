@@ -48,9 +48,9 @@ int main()
   p_t* pts = nullptr;
   size_t s = 0;
   try {
-    shp[0] = new Dot({0, 0});
-    shp[1] = new Dot({2, 3});
-    shp[2] = new Dot({-5, -2});
+    shp[0] = new Dot({-2, -2});
+    shp[1] = new Dot({0, 0});
+    shp[2] = new Dot({1, 2});
     for (size_t i = 0; i < 3; i++) {
       append(shp[i], &pts, s);
     }
@@ -116,17 +116,19 @@ void topit::flush(std::ostream &os, const char* cnv, f_t fr)
   }
 }
 
-char* topit::canvas(f_t fr, char fill) 
+char* topit::canvas(f_t fr, char fill)
 {
   size_t s = rows(fr) * cols(fr);
+  std::cout << s << '\n';
   char* c = new char[s];
+
   for(size_t i = 0; i < s; i++) {
     c[i] = fill;
   }
   return c;
 }
 
-topit::f_t topit::frame(const p_t* pts, size_t s) 
+topit::f_t topit::frame(const p_t* pts, size_t s)
 {
   int minx = pts[0].x, miny = pts[0].y;
   int maxx = minx, maxy = miny;
@@ -140,7 +142,7 @@ topit::f_t topit::frame(const p_t* pts, size_t s)
   p_t a{minx, miny};
   p_t b{maxx, maxy};
   return f_t{a, b};
-} 
+}
 
 
 
@@ -162,12 +164,12 @@ topit::p_t topit::Dot::next(p_t prev) const {
 
 size_t topit::rows(f_t fr)
 {
-  return (fr.bb.x - fr.aa.x + 1);
+  return (fr.bb.y - fr.aa.y + 1);
 }
 
 size_t topit::cols(f_t fr)
 {
-  return (fr.bb.y - fr.aa.y + 1);
+  return (fr.bb.x - fr.aa.x + 1);
 }
 
 bool topit::operator==(p_t a, p_t b) {
