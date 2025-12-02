@@ -26,6 +26,8 @@ namespace topit {
     p_t next(p_t prev) const override;
     p_t d;
   };
+
+  void append(const IDraw* sh, p_t** ppts, size_t &s);
 }
 
 
@@ -33,9 +35,14 @@ int main() {
   using namespace topit;
   int err = 0;
   IDraw* shp[3] = {};
+  p_t* pts = nullptr;
+  size_t s = 0;
   try {
     shp[0] = new Dot({0, 0});
     shp[1] = new Dot({2, 3});
+    for (size_t i = 0; i < 3; i++) {
+      append(shp[i], &pts, s);
+    }
   } catch (...) {
     std::cerr << "Error\n";
     err = 1;
