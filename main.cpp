@@ -38,6 +38,14 @@ namespace topit {
     size_t ndots;
   };
 
+  struct HSeg: IDraw {
+    explicit HSeg(p_t aa, p_t bb);
+    p_t begin() const override;
+    p_t next(p_t prev) const override;
+    p_t* dots;
+    size_t ndots;
+  };
+
   p_t* extend(const p_t* pts, size_t s, p_t fill);
   void extend(p_t** ppts, size_t &s, p_t fill);
   void append(const IDraw* sh, p_t** ppts, size_t &s);
@@ -52,12 +60,15 @@ int main()
 {
   using namespace topit;
   int err = 0;
-  IDraw* shp[3] = {};
+  IDraw* shp[4] = {};
   p_t* pts = nullptr;
   size_t s = 0;
   try {
-    shp[0] = new VSeg({0, 0}, {0, 5});
-    for (size_t i = 0; i < 1; i++) {
+    shp[0] = new HSeg({0, 0}, {5, 0});
+    shp[1] = new VSeg({2, -2}, {2, 4});
+    shp[2] = new Dot({5, 4});
+    shp[3] = new Dot({4, 2});
+    for (size_t i = 0; i < 4; i++) {
       append(shp[i], &pts, s);
     }
     f_t fr = frame(pts, s);
@@ -71,7 +82,9 @@ int main()
     std::cerr << "Error\n";
     err = 1;
   }
-  delete shp[0];
+  for (size_t i = 0; i < 4; i++) {
+    delete shp[i];
+  }
   return err;
 }
 
@@ -123,7 +136,6 @@ void topit::flush(std::ostream &os, const char* cnv, f_t fr)
 char* topit::canvas(f_t fr, char fill)
 {
   size_t s = rows(fr) * cols(fr);
-  std::cout << s << '\n';
   char* c = new char[s];
 
   for(size_t i = 0; i < s; i++) {
@@ -148,13 +160,48 @@ topit::f_t topit::frame(const p_t* pts, size_t s)
   return f_t{a, b};
 }
 
+topit::HSeg::HSeg(p_t aa, p_t bb):
+ IDraw(),
+ dots(new p_t[std::max(aa.x, bb.x) - std::min(aa.x, bb.x) + 1]),
+ ndots(std::max(aa.x, bb.x) - std::min(aa.x, bb.x) + 1)
+{
+  if (aa.y == bb.y) {
+    for (int i = 0; i < ndots; i++) {
+      dots[i] = p_t{aa.x + i, aa.y};
+    }
+  } else {
+    delete[] dots;
+    throw std::logic_error("dots should have identical ordinates");
+  }
+}
+
+topit::p_t topit::HSeg::begin() const {
+  return dots[0];
+}
+
+topit::p_t topit::HSeg::next(p_t prev) const {
+  for (size_t i = 0; i < ndots; i++) {
+    if (dots[i] == prev) {
+      if (i == ndots - 1) {
+        return dots[0];
+      }
+      return dots[i + 1];
+    }
+  }
+}
+
 topit::VSeg::VSeg(p_t aa, p_t bb):
  IDraw(),
  dots(new p_t[std::max(aa.y, bb.y) - std::min(aa.y, bb.y) + 1]),
  ndots(std::max(aa.y, bb.y) - std::min(aa.y, bb.y) + 1)
 {
-  for (int i = 0; i < ndots; i++) {
-    dots[i] = p_t{aa.x, aa.y + i};
+  if (aa.x == bb.x) {
+    for (int i = 0; i < ndots; i++) {
+      dots[i] = p_t{aa.x, aa.y + i};
+    }
+  } else {
+    delete[] dots;
+    throw std::logic_error("dots should have identical abscissas");
   }
 }
 
